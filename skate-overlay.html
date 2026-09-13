@@ -101,6 +101,13 @@
       </select>
     </div>
     <div class="field">
+      <label for="ghost">先出し</label>
+      <select id="ghost">
+        <option value="off" selected>なし / GPSアート</option>
+        <option value="on">薄く表示</option>
+      </select>
+    </div>
+    <div class="field">
       <label for="corner">配置</label>
       <select id="corner">
         <option value="bl" selected>左下</option>
@@ -195,7 +202,7 @@ const S = {
   modelLabel: "MET5.0",
   dur: 20, corner: "bl",
   playing: false, wallStart: 0, p: 0, raf: 0,
-  alpha: false, bg: "black",
+  alpha: false, bg: "black", ghost: false,
   label: "session"
 };
 
@@ -500,12 +507,14 @@ function draw(p){
 
   ctx.lineJoin = ctx.lineCap = "round";
 
-  // 走った全体を薄く（Strava の replay と同じ考え方）
-  ctx.strokeStyle = ink(.22);
-  ctx.lineWidth = 4*s;
-  ctx.beginPath();
-  S.pts.forEach((q,i) => i ? ctx.lineTo(X(q.px), Y(q.py)) : ctx.moveTo(X(q.px), Y(q.py)));
-  ctx.stroke();
+  // 走った全体を薄く（先出し）。GPSアートではネタバレになるので既定オフ。
+  if (S.ghost){
+    ctx.strokeStyle = ink(.22);
+    ctx.lineWidth = 4*s;
+    ctx.beginPath();
+    S.pts.forEach((q,i) => i ? ctx.lineTo(X(q.px), Y(q.py)) : ctx.moveTo(X(q.px), Y(q.py)));
+    ctx.stroke();
+  }
 
   // 現在までを白く
   ctx.strokeStyle = ink(1);
@@ -699,6 +708,7 @@ $("#model").addEventListener("change", () => {
 });
 function $$(s){ return [...document.querySelectorAll(s)]; }
 
+$("#ghost").addEventListener("change", () => { S.ghost = $("#ghost").value === "on"; draw(S.p); });
 $("#bg").addEventListener("change", () => {
   S.bg = $("#bg").value;
   document.body.classList.toggle("bg-green", S.bg === "green");
