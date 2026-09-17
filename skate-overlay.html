@@ -561,11 +561,11 @@ function draw(p){
 
   let ty = b.y + b.mapSize + b.gap + fs;
   for (const r of rows){
-    ctx.fillStyle = r.key ? ink(.62) : ink(1);
+    ctx.fillStyle = ink(1);
     ctx.fillText(r.txt, b.x, ty);
     if (r.cmt){
       const w = ctx.measureText(r.txt).width;
-      ctx.fillStyle = ink(.34);
+      ctx.fillStyle = ink(1);
       ctx.fillText(r.cmt, b.x + w, ty);
     }
     ty += b.lineH;
